@@ -17,7 +17,7 @@ const displaySurahs = surahs => {
         const div = document.createElement('div');
         div.classList.add('col');
         div.innerHTML = `
-                <div onclick="displayDetails('${surah.ayahs}')" class="p-3 border bg-light text-bold">${surah.name} <br> ${surah.englishName}</div>
+                <div onclick="loadSurah('${surah.number}')" class="p-3 border bg-light text-bold">${surah.name} <br> ${surah.englishName}</div>
             </div>
             `
         displayResult.appendChild(div);
@@ -38,7 +38,28 @@ const displaySurahs = surahs => {
     }
 }
 
-const displayDetails = ayahs => {
-    console.log(ayahs.ayas[0]);
+const loadSurah = surahNumber => {
+    const url = `https://api.alquran.cloud/v1/surah/${surahNumber}`
+    fetch(url)
+        .then(res => res.json())
+        .then(data => displaySurah(data.data.name, data.data.ayahs));
+}
+
+const displaySurah = (name, ayahs) => {
+    console.log(ayahs);
+    const surahDetailsText = document.getElementById('surah-details');
+    surahDetailsText.style.display = 'block';
+    surahDetailsText.innerHTML = '';
+    const div = document.createElement('div');
+    div.classList.add('card-header');
+    div.innerText = `${name}`;
+    surahDetailsText.appendChild(div);
+    ayahs.forEach((item, index) => {
+        const ul = document.createElement('ul');
+        ul.classList.add('list-group');
+        ul.classList.add('list-group-flush');
+        ul.innerHTML = `<li class="list-group-item">${ayahs[index].text}</li>`
+        surahDetailsText.appendChild(ul);
+    })
 
 }
