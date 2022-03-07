@@ -17,7 +17,7 @@ const displaySurahs = surahs => {
         const div = document.createElement('div');
         div.classList.add('col');
         div.innerHTML = `
-                <div class="p-3 border bg-light text-bold">${surah.name} <br> ${surah.englishName}</div>
+                <div onclick="displayDetails('${surah.ayahs}')" class="p-3 border bg-light text-bold">${surah.name} <br> ${surah.englishName}</div>
             </div>
             `
         displayResult.appendChild(div);
@@ -25,14 +25,20 @@ const displaySurahs = surahs => {
     surahs.splice(0, 20);
     console.log(surahs);
     if (surahs.length != 0) {
-
-        const btnDiv = document.createElement('div');
-        btnDiv.innerHTML = `
+        const btnDiv = document.getElementById('btn-div');
+        btnDiv.innerHTML = '';
+        const p = document.createElement('p');
+        p.innerHTML = `
          <button id = 'loadBtn' type="button" class="btn btn-secondary">Load More</button>
       `
-        displayResult.appendChild(btnDiv);
+        btnDiv.appendChild(p);
         document.getElementById('loadBtn').addEventListener('click', function() {
             if (surahs.length != 0) displaySurahs(surahs);
         })
     }
+}
+
+const displayDetails = ayahs => {
+    console.log(ayahs.ayas[0]);
+
 }
