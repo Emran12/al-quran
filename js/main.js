@@ -1,13 +1,10 @@
-const loadData = () => {
-    fetch('http://api.alquran.cloud/v1/quran/%7B%7Bedition%7D%7D')
+const loadSurahs = () => {
+    fetch('http://api.alquran.cloud/v1/surah')
         .then(res => res.json())
-        .then(data => loadSurahs(data.data))
+        .then(data => displaySurahs(data.data))
 }
-loadData();
 
-const loadSurahs = surahs => {
-    displaySurahs(surahs.surahs);
-}
+loadSurahs();
 
 const displaySurahs = surahs => {
     const s = surahs.slice(0, 20);
@@ -39,14 +36,13 @@ const displaySurahs = surahs => {
 }
 
 const loadSurah = surahNumber => {
-    const url = `https://api.alquran.cloud/v1/surah/${surahNumber}`
+    const url = `https://api.alquran.cloud/v1/surah/${surahNumber}`;
     fetch(url)
         .then(res => res.json())
         .then(data => displaySurah(data.data.name, data.data.ayahs));
 }
 
 const displaySurah = (name, ayahs) => {
-    console.log(ayahs);
     const surahDetailsText = document.getElementById('surah-details');
     surahDetailsText.style.display = 'block';
     surahDetailsText.innerHTML = '';
@@ -61,5 +57,28 @@ const displaySurah = (name, ayahs) => {
         ul.innerHTML = `<li class="list-group-item">${ayahs[index].text}</li>`
         surahDetailsText.appendChild(ul);
     })
+    document.getElementById('display-surahs').textContent = '';
+}
 
+const getSurah = () => {
+    const searchText = document.getElementById('search-text');
+    const displayResult = document.getElementById('display-surahs');
+    fetch('http://api.alquran.cloud/v1/surah')
+        .then(res => res.json())
+        .then(data => {
+            data.data.forEach(item => {
+                if (item.englishName == searchText.value) {
+                    displayResult.textContent = '';
+                    document.getElementById('btn-div').textContent = '';
+                    const div = document.createElement('div');
+                    div.classList.add('col');
+                    div.innerHTML = `
+                <div onclick="loadSurah('${item.number}')" class="p-3 border bg-light text-bold">${item.name} <br> ${item.englishName}</div>
+            </div>
+            `
+                    displayResult.appendChild(div);
+                }
+
+            })
+        })
 }
