@@ -8,7 +8,6 @@ loadSurahs();
 
 const displaySurahs = surahs => {
     const s = surahs.slice(0, 20);
-    console.log(surahs);
     const displayResult = document.getElementById('display-surahs');
     s.forEach(surah => {
         const div = document.createElement('div');
@@ -58,16 +57,25 @@ const displaySurah = (name, ayahs) => {
         surahDetailsText.appendChild(ul);
     })
     document.getElementById('display-surahs').textContent = '';
+    document.getElementById('btn-div').textContent = '';
 }
+
+const searchText = document.getElementById('search-text');
+var searchBtn = document.getElementById("button-search");
+searchText.addEventListener("keypress", function(event) {
+    if (event.key == 'Enter')
+        searchBtn.click();
+});
 
 const getSurah = () => {
     const searchText = document.getElementById('search-text');
+    surahDetailsText = document.getElementById('surah-details').textContent = '';
     const displayResult = document.getElementById('display-surahs');
     fetch('http://api.alquran.cloud/v1/surah')
         .then(res => res.json())
         .then(data => {
             data.data.forEach(item => {
-                if (item.englishName == searchText.value) {
+                if (item.englishName.toLowerCase().match(/[a-z]+/gi).join('') == searchText.value.toLowerCase().match(/[a-z]+/gi).join('')) {
                     displayResult.textContent = '';
                     document.getElementById('btn-div').textContent = '';
                     const div = document.createElement('div');
